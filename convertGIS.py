@@ -4,6 +4,18 @@ from shapely.geometry import Point
 from shapely import wkt
 import fiona
 
+def read_file(file_path):
+   _, ext = os.path.splitext(file_path)
+
+   if ext == '.csv':
+       df = pd.read_csv(file_path)
+   elif ext == '.xlsx':
+       df = pd.read_excel(file_path)
+   else: # assuming it's a spatial file like .shp, .kml, .geojson
+       gdf = gpd.read_file(file_path)
+
+   return df if 'df' in locals() else gdf
+
 def addGeometryColumnToCoordinateDataFrame(data, campo_longitud, campo_latitud):
     data["geometry"] = [Point(xy) for xy in zip(data[campo_longitud], data[campo_latitud])]
 
@@ -16,12 +28,6 @@ def writeGeoDataFrameToFile(geodata,output_path, driver):
     fiona.supported_drivers[driver] = 'rw'
     geodata.to_file(output_path, driver=driver)
 
-
-# LEER archivo fuente a GeoDataFrame o DataFrame
-
-# data = pd.read_csv(source_path)
-# data = pd.read_excel(source_path)
-# geodata = gpd.read_file(source_path)
 
 # ESCRIBIR a archivo de salida csv, excel, kml, shp, etc
 
