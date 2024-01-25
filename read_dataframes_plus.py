@@ -30,11 +30,6 @@ def read_file(file_path,csv_parameters = {}):
 
    return df if 'df' in locals() else gdf
 
-def get_folder_file_paths(folder_path,ignore_extension = ()):
-    dir = pathlib.Path(folder_path)
-    file_paths = [f for f in dir.iterdir() if f.suffix not in ignore_extension]
-    return file_paths
-
 def get_dataframes(file_paths: list, csv_parameters = {}):
     dataframes = {}
     for file_path in file_paths:       
@@ -43,7 +38,3 @@ def get_dataframes(file_paths: list, csv_parameters = {}):
         dataframes[file_name] = data
     return dataframes
 
-def get_dataframes_from_folder(folder_path,ignore_extension = (),csv_parameters = {}):
-    file_paths = get_folder_file_paths(folder_path,ignore_extension = ignore_extension)
-    folder_dfs = get_dataframes(file_paths, csv_parameters = csv_parameters)
-    return folder_dfs
