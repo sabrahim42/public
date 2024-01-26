@@ -3,6 +3,7 @@ import pandas as pd
 from shapely.geometry import Point
 from shapely import wkt
 import fiona
+import os
 
 def read_file(file_path):
    _, ext = os.path.splitext(file_path)
@@ -12,6 +13,8 @@ def read_file(file_path):
    elif ext == '.xlsx':
        df = pd.read_excel(file_path)
    else: # assuming it's a spatial file like .shp, .kml, .geojson
+       if ext == '.kml':
+            fiona.supported_drivers['LIBKML'] = 'rw'
        gdf = gpd.read_file(file_path)
 
    return df if 'df' in locals() else gdf
@@ -24,8 +27,9 @@ def convertDataFrameToGeoDataFrame(data, campo_geometry, crs = "EPSG:4326"):
     return geodata
 
 # Pasar GeoDataFrame a archivos SIG
-def writeGeoDataFrameToFile(geodata,output_path, driver):
-    fiona.supported_drivers[driver] = 'rw'
+def writeGeoDataFrameToFile(geodata,output_path):
+    if output_path.endswith('.kml'):
+        fiona.supported_drivers['LIBKML'] = 'rw'
     geodata.to_file(output_path, driver=driver)
 
 
