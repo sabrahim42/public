@@ -27,9 +27,11 @@ def convertDataFrameToGeoDataFrame(data, campo_geometry, crs = "EPSG:4326"):
     return geodata
 
 # Pasar GeoDataFrame a archivos SIG
-def writeGeoDataFrameToFile(geodata,output_path):
-    if output_path.endswith('.kml'):
-        fiona.supported_drivers['LIBKML'] = 'rw'
+def writeGeoDataFrameToFile(geodata,output_path,driver=None):
+    if output_path.endswith('kml') and driver is None:
+        driver = 'LIBKML'
+    if driver is not None:
+        fiona.supported_drivers[driver] = 'rw'        
     geodata.to_file(output_path, driver=driver)
 
 
