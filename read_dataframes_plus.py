@@ -1,9 +1,9 @@
 import pandas as pd
 import geopandas as gpd  
 import os
-import pathlib
 import csv
 import chardet
+import fiona
 
 def get_csv_encoding(file_path):
     with open(file_path, 'rb') as f:
@@ -26,6 +26,8 @@ def read_file(file_path,csv_parameters = {}):
    elif ext == '.xlsx':
        df = pd.read_excel(file_path)
    else: # assuming it's a spatial file like .shp, .kml, .geojson
+       if ext == '.kml':
+            fiona.supported_drivers['LIBKML'] = 'rw'
        gdf = gpd.read_file(file_path)
 
    return df if 'df' in locals() else gdf
