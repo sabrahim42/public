@@ -5,19 +5,19 @@ from shapely import wkt
 import fiona
 import os
 
-def read_file(file_path):
-   _, ext = os.path.splitext(file_path)
+# def read_file(file_path):
+#    _, ext = os.path.splitext(file_path)
 
-   if ext == '.csv':
-       df = pd.read_csv(file_path)
-   elif ext == '.xlsx':
-       df = pd.read_excel(file_path)
-   else: # assuming it's a spatial file like .shp, .kml, .geojson
-       if ext == '.kml':
-            fiona.supported_drivers['LIBKML'] = 'rw'
-       gdf = gpd.read_file(file_path)
+#    if ext == '.csv':
+#        df = pd.read_csv(file_path)
+#    elif ext == '.xlsx':
+#        df = pd.read_excel(file_path)
+#    else: # assuming it's a spatial file like .shp, .kml, .geojson
+#        if ext == '.kml':
+#             fiona.supported_drivers['LIBKML'] = 'rw'
+#        gdf = gpd.read_file(file_path)
 
-   return df if 'df' in locals() else gdf
+#    return df if 'df' in locals() else gdf
 
 def addGeometryColumnToCoordinateDataFrame(data, campo_longitud, campo_latitud):
     data["geometry"] = [Point(xy) for xy in zip(data[campo_longitud], data[campo_latitud])]
