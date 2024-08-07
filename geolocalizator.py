@@ -13,10 +13,10 @@ def init_geocode(user_agent: str = "alo", reverse: bool = False):
 
     return geocode
 
-def geolocate(data, geocode, campo_direccion):
+def geolocate(data, geocode, campo_direccion,limite=''):
     new_data = data.copy(deep=True)
 
-    locations = new_data.apply(lambda x: geocode(x[campo_direccion]),axis=1)
+    locations = new_data.apply(lambda x: geocode(x[campo_direccion] + limite),axis=1)
     new_data['X'] = locations.apply(lambda x: x.longitude if x is not None else None)
     new_data['Y'] = locations.apply(lambda x: x.latitude if x is not None else None)
 
