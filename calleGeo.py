@@ -49,3 +49,31 @@ def geolocalizar_con_callejero(fila,calle:str,altura:str, cruce:str,callejero):
 
   # Si faltan datos para geolocalizar, devuelvo NaN
   return np.nan
+
+def sentido_de_la_cuadra(callejero: gpd.GeoDataFrame):
+    # Crear la columna que va a contener si el sentido de la calle es correcto o reverso
+    callejero['sentido_correcto'] = True
+
+    # Iterar sobre cada fila del GeoDataFrame usando apply
+    def revisar_sentido(fila):
+        start, end = fila['geometry'].boundary.geoms  # Obtener punto de inicio de la geometría de la cuadra
+
+        # Obtener las cuadras de la misma calle, excluyendo la actual
+        cuadras_calle = callejero.loc[(callejero['nomoficial'] == fila['nomoficial']) & (callejero['id'] != fila['id'])]
+
+        if len(cuadras_calle) > 0:
+
+          # Calcular la distancia desde el punto de inicio de la cuadra actual a las demás cuadras
+          cuadras_calle['distancia_temp'] = cuadras_calle['geometry'].distance(start)
+
+          # Obtener la altura inicial de la cuadra más cercana
+          altura_cercana = cuadras_calle.loc[cuadras_calle['distancia_temp'].idxmin()]['alt_inicial']
+
+          # Verificar si el sentido de la cuadra es correcto comparando las alturas
+          if altura_cercana > fila['alt_inicial']:
+              return False
+
+    # Aplicar la función revisar_sentido a cada fila
+    callejero['sentido_correcto'] = callejero.apply(revisar_sentido, axis=1)
+
+    return callejero
