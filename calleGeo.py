@@ -21,6 +21,7 @@ def geolocalizar_con_callejero(fila,calle:str,altura:str, cruce:str,callejero):
   if pd.notnull(fila[cruce]):
     # Disuelvo las lineas de cuadras una sola linea por calle
     callejero = callejero.dissolve(by='nomoficial')
+    callejero.reset_index(inplace=True)
 
     # Encuentro los registros de la calle principal y del cruce de la direccion
     calle_1 = callejero[callejero['nomoficial'] == fila[calle]]
