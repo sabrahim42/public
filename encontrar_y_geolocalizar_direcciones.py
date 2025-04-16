@@ -23,7 +23,7 @@ def normalizar_direccion(direccion):
         response = s.get(url, params=payload)
     except requests.exceptions.RequestException as e:
         print(f'{e} - {direccion}')
-        return {}
+        return [{}]
     if response.status_code == 200:
         return response.json()
     else:
